@@ -7,7 +7,7 @@
 package chigi.logserver;
 
 import chigi.logserver.config.Config;
-import chigi.logserver.handler.server.LogInputServerHandler;
+import chigi.logserver.handler.server.AdminServerHandler;
 
 /**
  *
@@ -15,8 +15,8 @@ import chigi.logserver.handler.server.LogInputServerHandler;
  */
 public class Main {
     public static void main(String[] args){
-        Config config = new Config(8080);
-        Thread server = new Thread(new LogInputServerHandler(config));
+        Config config = new Config(8081);
+        Thread server = new Thread(new AdminServerHandler(config));
         server.start();
     }
 }

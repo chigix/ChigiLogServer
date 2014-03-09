@@ -3,22 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package chigi.logserver.handler.client;
 
 import chigi.logserver.config.ClientConfig;
 import chigi.logserver.handler.ClientHandler;
 import java.io.IOException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
+ * 日志输入客户端连接实例对象
  *
  * @author 郷
  */
-public class LogInputClientHandler extends ClientHandler{
+public class LogInputClientHandler extends ClientHandler {
 
     public LogInputClientHandler(ClientConfig config) {
         super(config);
@@ -26,12 +25,13 @@ public class LogInputClientHandler extends ClientHandler{
 
     @Override
     public void run() {
-        int oneByte = -1;
+        int oneByte = 0;
         List bytes = new LinkedList();
         while (true) {
             // 实时判断连接是否断开
             try {
-                getByteWriter().write(0);
+                getByteWriter().write(32);
+                getByteWriter().write(8);
                 getByteWriter().flush();
             } catch (IOException ex) {
                 this.close();
@@ -39,22 +39,24 @@ public class LogInputClientHandler extends ClientHandler{
             }
             try {
                 oneByte = getByteReader().read();
-                if (oneByte == (byte) '\n') {
-                    byte[] bytes_arr = new byte[bytes.size()];
-                    for (int i=0;i<bytes.size();i++) {
-                        Integer b = (Integer) bytes.get(i);
-                        bytes_arr[i] = (b).byteValue();
-                    }
-                    System.out.println(new String(bytes_arr));
-                    System.out.println(bytes.size());
-                    bytes.clear();
-                }else{
-                    bytes.add(oneByte);
-                }
             } catch (IOException ex) {
-                Logger.getLogger(LogInputClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+                this.close();
+                return;
+            }
+            if (oneByte == (byte) '\n' || oneByte == (byte) '\r') {
+                byte[] bytes_arr = new byte[bytes.size()];
+                for (int i = 0; i < bytes.size(); i++) {
+                    Integer b = (Integer) bytes.get(i);
+                    bytes_arr[i] = b.byteValue();
+                }
+                getConsole().log(new String(bytes_arr));
+                getConsole().print();
+                bytes.clear();
+                oneByte = 0;
+            } else {
+                bytes.add(oneByte);
             }
         }
     }
-    
+
 }

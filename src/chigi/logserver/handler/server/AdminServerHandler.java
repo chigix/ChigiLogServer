@@ -5,22 +5,22 @@ import chigi.logserver.config.BaseConfig;
 import chigi.logserver.config.ClientConfig;
 import chigi.logserver.handler.ClientHandler;
 import chigi.logserver.handler.ServerHandler;
-import chigi.logserver.handler.client.LogInputClientHandler;
+import chigi.logserver.handler.client.AdminClientHandler;
 
 /**
- * 日志输入类型服务器实例
+ *
  * @author 郷
  */
-public class LogInputServerHandler extends ServerHandler{
+public class AdminServerHandler extends ServerHandler{
 
-    public LogInputServerHandler(BaseConfig c) {
+    public AdminServerHandler(BaseConfig c) {
         super(c);
     }
 
     @Override
     public ClientHandler getClientHandler(ClientConfig config) {
         if (config.getId() == null) {
-            return new LogInputClientHandler(config);
+            return new AdminClientHandler(config);
         }else if(ClientsCollection.get(config.getId()) == null){
             return null;
         }else{
@@ -30,7 +30,7 @@ public class LogInputServerHandler extends ServerHandler{
 
     @Override
     public String getName() {
-        return "千木日志输入服务器";
+        return "千木管理员服务器";
     }
-
+    
 }

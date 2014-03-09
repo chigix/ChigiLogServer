@@ -56,12 +56,13 @@ public abstract class ClientHandler extends BaseHandler implements Runnable{
             this.charReader.close();
             this.charWriter.close();
             this.clientSocket.close();
-            this.console = null;
-            System.gc();
         } catch (IOException ex) {
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
-            System.out.println(this.getClientSocket().getInetAddress().getHostName() + "连接断开");
+            getConsole().log(this.getClientSocket().getInetAddress().getHostAddress() + "连接断开");
+            getConsole().print();
+            this.console = null;
+            System.gc();
         }
     }
     

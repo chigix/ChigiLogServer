@@ -33,5 +33,10 @@ public class LogOutputServerHandler extends ServerHandler{
             return ClientsCollection.get(config.getId());
         }
     }
+
+    @Override
+    public String getName() {
+        return "千木日志同步输出服务器";
+    }
     
 }

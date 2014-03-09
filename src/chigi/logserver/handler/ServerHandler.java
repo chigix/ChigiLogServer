@@ -1,6 +1,5 @@
 package chigi.logserver.handler;
 
-import chigi.logserver.collection.ServersCollection;
 import chigi.logserver.config.BaseConfig;
 import chigi.logserver.config.ClientConfig;
 import chigi.logserver.config.Config;
@@ -31,13 +30,17 @@ public abstract class ServerHandler extends BaseHandler implements Runnable{
      */
     public ServerHandler(BaseConfig c) {
         super(c);
-        System.out.println(this.getId());
     }
 
     public ServerSocket getServerSocket() {
         return serverSocket;
     }
 
+    public ConsoleHandler getConsole() {
+        return console;
+    }
+
+    
     public void setServerSocket(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
     }
@@ -61,7 +64,7 @@ public abstract class ServerHandler extends BaseHandler implements Runnable{
             }
             return;
         }
-        console.log("千木日志输入服务器启动");
+        console.log(getName() + "启动");
         console.print();
         config.setStatus(ConfigStatus.RUNNING);
         boolean flag = true;
@@ -71,7 +74,8 @@ public abstract class ServerHandler extends BaseHandler implements Runnable{
                     Socket clientSocket = null;
                     try {
                         clientSocket = this.serverSocket.accept();
-                        System.out.println(clientSocket.getInetAddress().getHostName() + "加入本次会话，开始投射日志");
+                        console.log(clientSocket.getInetAddress().getHostName() + "加入本次会话");
+                        console.print();
                     } catch (IOException ex) {
                         // 判断当前服务器进程是否仍在运行
                         // 仅在运行期间才抛出读取异常
@@ -107,32 +111,38 @@ public abstract class ServerHandler extends BaseHandler implements Runnable{
             case SUSPENDED:
             case HALTED:
             default:
-                System.out.println("当前服务器线程已停止。");
+                getConsole().log("当前服务器 " + getName() + " 线程停止");
+                getConsole().print();
                 return;
                 // break;
         }
         config.setStatus(ConfigStatus.HALTED);
         this.threadPool.shutdown();
-        System.out.println("所有连接将在60秒内全部结束");
+        getConsole().log("服务器" + getName() + ":" + config.getServerConfig().getPort() + " 所有连接将在60秒内全部结束");
         try {
             if (!this.threadPool.awaitTermination(60, TimeUnit.SECONDS)) {
                 this.threadPool.shutdownNow();
                 if (!this.threadPool.awaitTermination(60, TimeUnit.SECONDS)) {
-                    System.out.println("线程池关闭失败");
+                    console.log("服务器" + getName() + ":" + config.getServerConfig().getPort() + " 线程池关闭失败");
+                    console.print();
                 }
             }
         } catch (InterruptedException ex) {
+            console.print();
             this.threadPool.shutdownNow();
             Thread.currentThread().interrupt();
         }
         try {
             this.serverSocket.close();
         } catch (IOException ex) {
-            Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, "当前服务器已关闭", ex);
+            console.log("服务器" + getName() + ":" + config.getServerConfig().getPort() + " 已关闭");
+            console.print();
+            return;
         }
         this.serverSocket = null;
         System.gc();
-        System.out.println("【~~千木服务器进程停止~~】");
+        console.log("服务器" + getName() + ":" + config.getServerConfig().getPort() + " 线程停止");
+        console.print();
         config.setStatus(ConfigStatus.HALTED);
     }
 
@@ -140,4 +150,9 @@ public abstract class ServerHandler extends BaseHandler implements Runnable{
      * 获取 客户端连接实例
      */
     public abstract ClientHandler getClientHandler(ClientConfig config);
+    /**
+     * 获取当前服务器实例名称
+     * @return 
+     */
+    public abstract String getName();
 }

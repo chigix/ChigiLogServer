@@ -1,8 +1,6 @@
 package chigi.logserver.handler;
 
-import chigi.logserver.collection.ConsolesCollection;
 import chigi.logserver.config.BaseConfig;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,13 +15,11 @@ public class ConsoleHandler extends BaseHandler{
         super(config);
     }
     
-    private ArrayList msg = new ArrayList();
+    private ArrayList<String> msg = new ArrayList<String>();
     private static final PrintWriter TERMINAL;
-    private static final OutputStreamWriter BYTE_WRITER;
 
     static{
         TERMINAL = new PrintWriter(System.out,true);
-        BYTE_WRITER = new OutputStreamWriter(System.out);
     }
     
     /**
@@ -32,8 +28,12 @@ public class ConsoleHandler extends BaseHandler{
      * @return 
      */
     public ConsoleHandler log(String msg){
+        StringBuilder builder = new StringBuilder("[" + new Date() + "] ");
+        builder.append("\"");
+        builder.append(msg);
+        builder.append("\"");
         if (msg != null && !msg.isEmpty()) {
-            this.msg.add("[" + new Date() + "] " + "\"" + msg + "\"");
+            this.msg.add(builder.toString());
         }
         return this;
     }
@@ -48,8 +48,10 @@ public class ConsoleHandler extends BaseHandler{
         if (msg == null) {
             msg = "NULL";
         }
+        StringBuilder builder = new StringBuilder(prefix);
+        builder.append(" - - [").append(new Date()).append("] ").append("\"").append(msg).append("\"");
         if (!msg.isEmpty()) {
-            this.msg.add(prefix + " - - [" + new Date() + "] " + "\"" + msg + "\"");
+            this.msg.add(builder.toString());
         }
         return this;
     }
@@ -68,6 +70,7 @@ public class ConsoleHandler extends BaseHandler{
     public void print(){
         synchronized(ConsoleHandler.TERMINAL){
             ConsoleHandler.TERMINAL.println(this);
+            this.msg.clear();
         }
     }
     
