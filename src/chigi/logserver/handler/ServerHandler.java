@@ -31,7 +31,7 @@ public abstract class ServerHandler extends BaseHandler implements Runnable{
      */
     public ServerHandler(BaseConfig c) {
         super(c);
-        ServersCollection.set(this.getId(), this);
+        System.out.println(this.getId());
     }
 
     public ServerSocket getServerSocket() {
@@ -61,7 +61,7 @@ public abstract class ServerHandler extends BaseHandler implements Runnable{
             }
             return;
         }
-        console.log("千木服务器进程启动");
+        console.log("千木日志输入服务器启动");
         console.print();
         config.setStatus(ConfigStatus.RUNNING);
         boolean flag = true;
@@ -71,6 +71,7 @@ public abstract class ServerHandler extends BaseHandler implements Runnable{
                     Socket clientSocket = null;
                     try {
                         clientSocket = this.serverSocket.accept();
+                        System.out.println(clientSocket.getInetAddress().getHostName() + "加入本次会话，开始投射日志");
                     } catch (IOException ex) {
                         // 判断当前服务器进程是否仍在运行
                         // 仅在运行期间才抛出读取异常

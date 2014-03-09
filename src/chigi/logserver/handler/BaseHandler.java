@@ -6,6 +6,7 @@
 
 package chigi.logserver.handler;
 
+import chigi.logserver.collection.HandlerCollection;
 import chigi.logserver.config.BaseConfig;
 
 /**
@@ -13,14 +14,6 @@ import chigi.logserver.config.BaseConfig;
  * @author 郷
  */
 abstract public class BaseHandler{
-    private static Object SYNC = new Object();
-    private static int NEXT_ID = 0;
-    private static int getNextId(){
-        synchronized(SYNC){
-            return ++NEXT_ID;
-        }
-    }
-    
     private int id;
     private BaseConfig config;
     public int getId() {
@@ -33,7 +26,6 @@ abstract public class BaseHandler{
 
     public BaseHandler(BaseConfig config) {
         this.config = config;
-        this.id = getNextId();
+        this.id = HandlerCollection.push(this);
     }
-    
 }

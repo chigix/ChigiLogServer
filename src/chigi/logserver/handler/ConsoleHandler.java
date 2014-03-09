@@ -2,6 +2,7 @@ package chigi.logserver.handler;
 
 import chigi.logserver.collection.ConsolesCollection;
 import chigi.logserver.config.BaseConfig;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,14 +15,15 @@ public class ConsoleHandler extends BaseHandler{
 
     public ConsoleHandler(BaseConfig config) {
         super(config);
-        ConsolesCollection.set(this.getId(), this);
     }
     
     private ArrayList msg = new ArrayList();
     private static final PrintWriter TERMINAL;
+    private static final OutputStreamWriter BYTE_WRITER;
 
     static{
         TERMINAL = new PrintWriter(System.out,true);
+        BYTE_WRITER = new OutputStreamWriter(System.out);
     }
     
     /**

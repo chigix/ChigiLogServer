@@ -8,12 +8,7 @@ import java.util.ArrayList;
  * @author 郷
  */
 public class ConsolesCollection{
-    private static ArrayList<ConsoleHandler> CONSOLES = new ArrayList<ConsoleHandler>();
     public static ConsoleHandler get(int id){
-        return CONSOLES.get(id);
-    }
-    public static ConsoleHandler set(int id, ConsoleHandler console){
-        CONSOLES.set(id, console);
-        return console;
+        return (ConsoleHandler) HandlerCollection.INSTANCE_MAP.get(ConsoleHandler.class).get(id);
     }
 }
