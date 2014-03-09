@@ -3,7 +3,7 @@ package chigi.logserver.command;
 import chigi.logserver.command.exception.ArgsInvalidException;
 import chigi.logserver.command.exception.CommandErrorException;
 import chigi.logserver.command.exception.CommandNotExistsException;
-import java.io.PrintWriter;
+import chigi.logserver.handler.ClientHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -14,10 +14,11 @@ import java.util.logging.Logger;
  * @author 郷
  */
 public abstract class BaseCommand {
+    private ClientHandler client;
     public abstract String getCommandName();
     public abstract void initProperties() throws ArgsInvalidException;
     public abstract void run() throws ArgsInvalidException,CommandNotExistsException;
-    public static BaseCommand buildCommand(String command, PrintWriter writer) 
+    public static BaseCommand buildCommand(String command, ClientHandler client) 
             throws CommandNotExistsException, ArgsInvalidException,CommandErrorException{
         if (command == null || command.length() <1) {
             throw new CommandErrorException("COMMAND ERROR");
@@ -53,6 +54,7 @@ public abstract class BaseCommand {
                                             .append(tmpSub.substring(1)).toString()
                                     + "Command").newInstance();
                             args = command_to_run.getArgs();
+                            command_to_run.client = client;
                         } catch (ClassNotFoundException ex) {
                             throw new CommandNotExistsException(tmpSub, ex);
                         } catch (InstantiationException ex) {
@@ -105,6 +107,14 @@ public abstract class BaseCommand {
 
     public List<Argument> getArgs() {
         return args;
+    }
+
+    public ClientHandler getClient() {
+        return client;
+    }
+    
+    public static void setClientToCommand(ClientHandler handler,BaseCommand cmd){
+        cmd.client = handler;
     }
     
 }

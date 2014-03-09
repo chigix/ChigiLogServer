@@ -1,5 +1,6 @@
 package chigi.logserver.handler;
 
+import chigi.logserver.collection.HandlerCollection;
 import chigi.logserver.config.BaseConfig;
 import chigi.logserver.config.ClientConfig;
 import chigi.logserver.config.Config;
@@ -103,6 +104,7 @@ public abstract class ServerHandler extends BaseHandler implements Runnable{
      * 关闭当前服务器线程
      */
     public void close() {
+        HandlerCollection.INSTANCE_MAP.get(ServerHandler.class).set(this.getId(), null);
         Config config = (Config) this.getConfig();
         switch (config.getStatus()) {
             case RUNNING:

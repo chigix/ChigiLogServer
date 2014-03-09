@@ -31,6 +31,16 @@ public class StartCommand extends BaseCommand {
             } catch (NumberFormatException numberFormatException) {
                 throw new ArgsInvalidException("Please specific an valid port.");
             }
+            BaseCommand.setClientToCommand(this.getClient(), cmd);
+            cmd.run();
+        } else if (type_to_start.equals("LogOutputServer")) {
+            StartLogOutputServerCommand cmd = new StartLogOutputServerCommand();
+            try {
+                cmd.setPort(Integer.parseInt(sysArg2));
+            } catch (NumberFormatException numberFormatException) {
+                throw new ArgsInvalidException("Please specific an valid port.");
+            }
+            BaseCommand.setClientToCommand(this.getClient(), cmd);
             cmd.run();
         }else{
             throw new ArgsInvalidException(type_to_start + " is not valid server module.");

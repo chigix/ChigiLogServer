@@ -8,8 +8,6 @@ import chigi.logserver.config.BaseConfig;
 import chigi.logserver.config.ClientConfig;
 import chigi.logserver.handler.ClientHandler;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -76,7 +74,7 @@ public class AdminClientHandler extends ClientHandler {
                         }
                         BaseCommand cmd = null;
                         try {
-                            cmd = BaseCommand.buildCommand(command, getCharWriter());
+                            cmd = BaseCommand.buildCommand(command, this);
                         } catch (CommandNotExistsException ex) {
                             getCharWriter().println("Command " + ex.getCommandName() + " is INVALID");
                             break;
@@ -100,6 +98,11 @@ public class AdminClientHandler extends ClientHandler {
                 }
             }
         }
+    }
+
+    @Override
+    public void println(String msg) {
+        this.getCharWriter().println(msg);
     }
 
 }

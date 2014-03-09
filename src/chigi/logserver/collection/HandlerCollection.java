@@ -36,12 +36,28 @@ public class HandlerCollection {
             Class target_type = handler.getClass();
             while (!target_type.equals(Object.class)) {
                 if (target_type.equals(type)) {
-                    INSTANCE_MAP.get(type).add(handler);
-                    return INSTANCE_MAP.get(type).indexOf(handler);
+                    if (!INSTANCE_MAP.get(type).contains(handler)) {
+                        INSTANCE_MAP.get(type).add(handler);
+                    }
+                    int id = INSTANCE_MAP.get(type).indexOf(handler);
+                    return id;
                 }
                 target_type = target_type.getSuperclass();
             }
         }
         return null;
+    }
+    
+    public static void remove(BaseHandler handler){
+        for (Class type : INSTANCE_MAP.keySet()) {
+            Class target_type = handler.getClass();
+            while (!target_type.equals(Object.class)) {                
+                if (target_type.equals(type)) {
+                    INSTANCE_MAP.get(type).set(handler.getId(),null);
+                    return;
+                }
+                target_type = target_type.getSuperclass();
+            }
+        }
     }
 }

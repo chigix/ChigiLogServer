@@ -28,4 +28,8 @@ abstract public class BaseHandler{
         this.config = config;
         this.id = HandlerCollection.push(this);
     }
+    
+    public void unregister(){
+        HandlerCollection.remove(this);
+    }
 }
